@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+sqlalchemy
+pytest
+factory_boy
+faker
+httpx2
+pytest-html

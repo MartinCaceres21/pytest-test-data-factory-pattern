@@ -383,19 +383,46 @@ A concise way to explain this project:
 
 > I built a small Python API testing lab using FastAPI, pytest, and factory_boy. The goal was to demonstrate how the Factory Pattern helps generate reusable and isolated test data for RBAC and multi-tenant scenarios. The tests validate tenant isolation, role-based permissions, API behavior, and edge cases such as invalid or outlier EPD data.
 
+## Current implementation
+
+This repository now includes a compact working version of the planned testing lab:
+
+- FastAPI app with `/health`, `/projects`, and `/epds` endpoints.
+- SQLAlchemy models for tenants, users, projects, and EPDs.
+- Lightweight test authentication using the `X-User-Id` header.
+- pytest fixtures for isolated in-memory SQLite sessions and API clients.
+- factory_boy factories for tenants, users, projects, and EPD data.
+- Tests for health checks, RBAC, tenant isolation, factories, and EPD edge cases.
+- GitHub Actions CI workflow that installs dependencies and runs `pytest -v`.
+
+## Implementation notes
+
+Authentication is intentionally simple because this project focuses on test data generation, authorization scenarios, and tenant boundaries. Tests create users with factories, commit them to the isolated test database, and pass their ID through `X-User-Id`.
+
+Each test uses an in-memory SQLite database created from the SQLAlchemy metadata. This keeps test data independent and avoids external services.
+
+Factories live under `tests/` because they are testing tools, not production code. They centralize object creation and make scenario setup explicit:
+
+```python
+tenant = TenantFactory()
+admin = AdminUserFactory(tenant=tenant)
+project = ProjectFactory(tenant=tenant)
+outlier_epd = EPDFactory(tenant=tenant, gwp=999999)
+```
+
 ## Roadmap checklist
 
-- [ ] Create project structure
-- [ ] Add FastAPI health endpoint
-- [ ] Add pytest configuration
-- [ ] Add SQLAlchemy models
-- [ ] Add test database fixture
-- [ ] Add FastAPI test client fixture
-- [ ] Add factory_boy factories
-- [ ] Add project endpoints
-- [ ] Add EPD endpoints
-- [ ] Add RBAC tests
-- [ ] Add tenant isolation tests
-- [ ] Add EPD edge case tests
-- [ ] Add documentation examples
-- [ ] Add GitHub Actions CI
+- [x] Create project structure
+- [x] Add FastAPI health endpoint
+- [x] Add pytest configuration
+- [x] Add SQLAlchemy models
+- [x] Add test database fixture
+- [x] Add FastAPI test client fixture
+- [x] Add factory_boy factories
+- [x] Add project endpoints
+- [x] Add EPD endpoints
+- [x] Add RBAC tests
+- [x] Add tenant isolation tests
+- [x] Add EPD edge case tests
+- [x] Add documentation examples
+- [x] Add GitHub Actions CI
